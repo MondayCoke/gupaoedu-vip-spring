@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class GPDefaultListableBeanFactory implements GPBeanFactory {
 
-    public Map<String,GPBeanDefinition> beanDefinitionMap = new HashMap<String,GPBeanDefinition>();
+    public Map<String, GPBeanDefinition> beanDefinitionMap = new HashMap<String, GPBeanDefinition>();
 
     @Override
     public Object getBean(Class beanClass) {
@@ -23,10 +23,10 @@ public class GPDefaultListableBeanFactory implements GPBeanFactory {
 
     public void doRegistBeanDefinition(List<GPBeanDefinition> beanDefinitions) throws Exception {
         for (GPBeanDefinition beanDefinition : beanDefinitions) {
-            if(this.beanDefinitionMap.containsKey(beanDefinition.getFactoryBeanName())){
+            if (this.beanDefinitionMap.containsKey(beanDefinition.getFactoryBeanName())) {
                 throw new Exception("The " + beanDefinition.getFactoryBeanName() + " is exists!!!");
             }
-            this.beanDefinitionMap.put(beanDefinition.getFactoryBeanName(),beanDefinition);
+            this.beanDefinitionMap.put(beanDefinition.getFactoryBeanName(), beanDefinition);
         }
     }
 }

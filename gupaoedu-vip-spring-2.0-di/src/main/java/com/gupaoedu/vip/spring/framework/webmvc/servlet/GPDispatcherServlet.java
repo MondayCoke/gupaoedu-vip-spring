@@ -116,7 +116,6 @@ public class GPDispatcherServlet extends HttpServlet {
         doInitHandlerMapping();
 
         System.out.println("GP Spring framework is init.");
-
     }
 
     private void doInitHandlerMapping() {

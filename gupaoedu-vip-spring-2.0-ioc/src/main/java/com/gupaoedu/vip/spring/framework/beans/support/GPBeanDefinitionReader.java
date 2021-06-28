@@ -18,35 +18,34 @@ public class GPBeanDefinitionReader {
     //缓存从包路径下扫描的全类名, 需要被注册地BeanClass们
     private List<String> registryBeanClasses = new ArrayList<String>();
 
-    public GPBeanDefinitionReader(String... locations){
+    public GPBeanDefinitionReader(String... locations) {
         //1、加载Properties文件
         doLoadConfig(locations[0]);
 
         //2、扫描相关的类
         doScanner(contextConfig.getProperty("scanPackage"));
-
     }
 
-    public List<GPBeanDefinition> loadBeanDefinitions(){
+    public List<GPBeanDefinition> loadBeanDefinitions() {
         List<GPBeanDefinition> result = new ArrayList<GPBeanDefinition>();
-
         try {
             for (String className : registryBeanClasses) {
                 Class<?> beanClass = Class.forName(className);
 
                 //beanClass本身是接口的话，不做处理
-                if(beanClass.isInterface()){ continue; }
+                if (beanClass.isInterface()) {
+                    continue;
+                }
 
                 //1、默认类名首字母小写的情况
-                result.add(doCreateBeanDefinition(toLowerFirstCase(beanClass.getSimpleName()),beanClass.getName()));
+                result.add(doCreateBeanDefinition(toLowerFirstCase(beanClass.getSimpleName()), beanClass.getName()));
 
                 //2、如果是接口，就用实现类
                 for (Class<?> i : beanClass.getInterfaces()) {
-                    result.add(doCreateBeanDefinition(i.getName(),beanClass.getName()));
+                    result.add(doCreateBeanDefinition(i.getName(), beanClass.getName()));
                 }
-
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return result;
@@ -62,13 +61,13 @@ public class GPBeanDefinitionReader {
 
     //根据contextConfigLocation的路径去ClassPath下找到对应的配置文件
     private void doLoadConfig(String contextConfigLocation) {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(contextConfigLocation.replaceAll("classpath:",""));
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream(contextConfigLocation.replaceAll("classpath:", ""));
         try {
             contextConfig.load(is);
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            if(null != is){
+        } finally {
+            if (null != is) {
                 try {
                     is.close();
                 } catch (IOException e) {
@@ -80,30 +79,29 @@ public class GPBeanDefinitionReader {
 
     //扫描ClassPath下符合包路径规则所有的Class文件
     private void doScanner(String scanPackage) {
-        URL url = this.getClass().getClassLoader().getResource("/" + scanPackage.replaceAll("\\.","/"));
+        URL url = this.getClass().getClassLoader().getResource("/" + scanPackage.replaceAll("\\.", "/"));
         File classPath = new File(url.getFile());
 
         for (File file : classPath.listFiles()) {
-            if(file.isDirectory()){
+            if (file.isDirectory()) {
                 doScanner(scanPackage + "." + file.getName());
-            }else {
+            } else {
                 //取反，减少代码嵌套
-                if(!file.getName().endsWith(".class")){ continue; }
+                if (!file.getName().endsWith(".class")) {
+                    continue;
+                }
 
                 //包名.类名  比如： com.gupaoedu.demo.DemoAction
                 String className = (scanPackage + "." + file.getName().replace(".class", ""));
                 //实例化，要用到  Class.forName(className);
                 registryBeanClasses.add(className);
             }
-
         }
-
     }
 
     private String toLowerFirstCase(String simpleName) {
-        char [] chars = simpleName.toCharArray();
+        char[] chars = simpleName.toCharArray();
         chars[0] += 32;     //利用了ASCII码，大写字母和小写相差32这个规律
         return String.valueOf(chars);
     }
-
 }
