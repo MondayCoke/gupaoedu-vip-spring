@@ -16,14 +16,14 @@ import java.util.*;
 public class GPDispatcherServlet extends HttpServlet {
 
     //保存Controller中URL和Method的对应关系
-    private Map<String,Method> handlerMapping = new HashMap<String, Method>();
+    private Map<String, Method> handlerMapping = new HashMap<String, Method>();
 
     //IoC容器的访问上下文
     private GPApplicationContext applicationContext = null;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doPost(req,resp);
+        this.doPost(req, resp);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class GPDispatcherServlet extends HttpServlet {
 
         //6、根据URL委派给具体的调用方法
         try {
-            doDispatch(req,resp);
+            doDispatch(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
             resp.getWriter().write("500 Exception,Detail: " + Arrays.toString(e.getStackTrace()));
@@ -41,9 +41,9 @@ public class GPDispatcherServlet extends HttpServlet {
     private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String url = req.getRequestURI();
         String contextPath = req.getContextPath();
-        url = url.replaceAll(contextPath,"").replaceAll("/+","/");
+        url = url.replaceAll(contextPath, "").replaceAll("/+", "/");
 
-        if(!this.handlerMapping.containsKey(url)){
+        if (!this.handlerMapping.containsKey(url)) {
             resp.getWriter().write("404 Not Found!!!");
             return;
         }
@@ -51,25 +51,25 @@ public class GPDispatcherServlet extends HttpServlet {
         Method method = this.handlerMapping.get(url);
 
         //1、先把形参的位置和参数名字建立映射关系，并且缓存下来
-        Map<String,Integer> paramIndexMapping = new HashMap<String, Integer>();
+        Map<String, Integer> paramIndexMapping = new HashMap<String, Integer>();
 
-        Annotation [][] pa = method.getParameterAnnotations();
-        for (int i = 0; i < pa.length; i ++) {
+        Annotation[][] pa = method.getParameterAnnotations();
+        for (int i = 0; i < pa.length; i++) {
             for (Annotation a : pa[i]) {
-                if(a instanceof GPRequestParam){
+                if (a instanceof GPRequestParam) {
                     String paramName = ((GPRequestParam) a).value();
-                    if(!"".equals(paramName.trim())){
-                        paramIndexMapping.put(paramName,i);
+                    if (!"".equals(paramName.trim())) {
+                        paramIndexMapping.put(paramName, i);
                     }
                 }
             }
         }
 
-       Class<?> [] paramTypes = method.getParameterTypes();
+        Class<?>[] paramTypes = method.getParameterTypes();
         for (int i = 0; i < paramTypes.length; i++) {
             Class<?> type = paramTypes[i];
-            if(type == HttpServletRequest.class || type == HttpServletResponse.class){
-                paramIndexMapping.put(type.getName(),i);
+            if (type == HttpServletRequest.class || type == HttpServletResponse.class) {
+                paramIndexMapping.put(type.getName(), i);
             }
         }
 
@@ -77,13 +77,15 @@ public class GPDispatcherServlet extends HttpServlet {
         Object[] paramValues = new Object[paramTypes.length];
 
         //http://localhost/demo/query?name=Tom&name=Tomcat&name=Mic
-        Map<String,String[]> params = req.getParameterMap();
+        Map<String, String[]> params = req.getParameterMap();
         for (Map.Entry<String, String[]> param : params.entrySet()) {
             String value = Arrays.toString(param.getValue())
-                    .replaceAll("\\[|\\]","")
-                    .replaceAll("\\s","");
+                    .replaceAll("\\[|\\]", "")
+                    .replaceAll("\\s", "");
 
-            if(!paramIndexMapping.containsKey(param.getKey())){continue;}
+            if (!paramIndexMapping.containsKey(param.getKey())) {
+                continue;
+            }
 
             int index = paramIndexMapping.get(param.getKey());
 
@@ -91,19 +93,19 @@ public class GPDispatcherServlet extends HttpServlet {
             paramValues[index] = value;
         }
 
-        if(paramIndexMapping.containsKey(HttpServletRequest.class.getName())){
+        if (paramIndexMapping.containsKey(HttpServletRequest.class.getName())) {
             int index = paramIndexMapping.get(HttpServletRequest.class.getName());
             paramValues[index] = req;
         }
 
-        if(paramIndexMapping.containsKey(HttpServletResponse.class.getName())){
+        if (paramIndexMapping.containsKey(HttpServletResponse.class.getName())) {
             int index = paramIndexMapping.get(HttpServletResponse.class.getName());
             paramValues[index] = resp;
         }
 
         String beanName = toLowerFirstCase(method.getDeclaringClass().getSimpleName());
         //3、组成动态实际参数列表，传给反射调用
-        method.invoke(applicationContext.getBean(beanName),paramValues);
+        method.invoke(applicationContext.getBean(beanName), paramValues);
     }
 
     @Override
@@ -119,29 +121,35 @@ public class GPDispatcherServlet extends HttpServlet {
     }
 
     private void doInitHandlerMapping() {
-        if(this.applicationContext.getBeanDefinitionCount() == 0 ){ return; }
+        if (this.applicationContext.getBeanDefinitionCount() == 0) {
+            return;
+        }
 
         for (String beanName : this.applicationContext.getBeanDefinitionNames()) {
             Object instance = applicationContext.getBean(beanName);
             Class<?> clazz = instance.getClass();
 
-            if(!clazz.isAnnotationPresent(GPController.class)){ continue; }
+            if (!clazz.isAnnotationPresent(GPController.class)) {
+                continue;
+            }
 
 
             String baseUrl = "";
-            if(clazz.isAnnotationPresent(GPRequestMapping.class)){
+            if (clazz.isAnnotationPresent(GPRequestMapping.class)) {
                 GPRequestMapping requestMapping = clazz.getAnnotation(GPRequestMapping.class);
                 baseUrl = requestMapping.value();
             }
 
             //只迭代public方法
             for (Method method : clazz.getMethods()) {
-                if(!method.isAnnotationPresent(GPRequestMapping.class)){ continue; }
+                if (!method.isAnnotationPresent(GPRequestMapping.class)) {
+                    continue;
+                }
 
                 GPRequestMapping requestMapping = method.getAnnotation(GPRequestMapping.class);
                 //  //demo//query
-                String url = ("/" + baseUrl + "/" + requestMapping.value()).replaceAll("/+","/");
-                handlerMapping.put(url,method);
+                String url = ("/" + baseUrl + "/" + requestMapping.value()).replaceAll("/+", "/");
+                handlerMapping.put(url, method);
                 System.out.println("Mapped : " + url + " --> " + method);
 
             }
@@ -150,7 +158,7 @@ public class GPDispatcherServlet extends HttpServlet {
 
 
     private String toLowerFirstCase(String simpleName) {
-        char [] chars = simpleName.toCharArray();
+        char[] chars = simpleName.toCharArray();
         chars[0] += 32;     //利用了ASCII码，大写字母和小写相差32这个规律
         return String.valueOf(chars);
     }
