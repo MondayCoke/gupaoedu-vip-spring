@@ -8,5 +8,4 @@ public interface GPBeanFactory {
     Object getBean(Class beanClass);
 
     Object getBean(String beanName);
-
 }

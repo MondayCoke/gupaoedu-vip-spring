@@ -10,41 +10,41 @@ import java.util.regex.Pattern;
 
 public class GPView {
     private File viewFile;
+
     public GPView(File templateFile) {
         this.viewFile = templateFile;
     }
 
-    public void render(Map<String,?> model, HttpServletRequest req, HttpServletResponse resp) throws Exception {
-
+    public void render(Map<String, ?> model, HttpServletRequest req, HttpServletResponse resp) throws Exception {
         //无反射，不框架
         //无正则，不架构
 
         StringBuffer sb = new StringBuffer();
-        RandomAccessFile ra = new RandomAccessFile(this.viewFile,"r");
+        RandomAccessFile ra = new RandomAccessFile(this.viewFile, "r");
 
         String line = null;
-        while (null != (line = ra.readLine())){
-            line = new String(line.getBytes("iso-8859-1"),"utf-8");
+        while (null != (line = ra.readLine())) {
+            line = new String(line.getBytes("iso-8859-1"), "utf-8");
 
-            Pattern pattern = Pattern.compile("￥\\{[^\\}]+\\}",Pattern.CASE_INSENSITIVE);
+            Pattern pattern = Pattern.compile("￥\\{[^\\}]+\\}", Pattern.CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(line);
-            while (matcher.find()){
+            while (matcher.find()) {
                 //  ￥{teacher}
                 String paramName = matcher.group();
 
-                paramName = paramName.replaceAll("￥\\{|\\}","");
+                paramName = paramName.replaceAll("￥\\{|\\}", "");
                 Object paramValue = model.get(paramName);
-                if(null == paramValue){continue;}
+                if (null == paramValue) {
+                    continue;
+                }
                 line = matcher.replaceFirst(makeStringForRegExp(paramValue.toString()));
                 matcher = pattern.matcher(line);
             }
             sb.append(line);
-
         }
 
         resp.setCharacterEncoding("utf-8");
         resp.getWriter().write(sb.toString());
-
     }
 
 

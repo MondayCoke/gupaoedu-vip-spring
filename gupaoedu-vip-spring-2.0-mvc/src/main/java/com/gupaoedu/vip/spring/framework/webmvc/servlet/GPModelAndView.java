@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class GPModelAndView {
     private String viewName;
-    private Map<String,?> model;
+    private Map<String, ?> model;
 
     public GPModelAndView(String viewName) {
         this.viewName = viewName;

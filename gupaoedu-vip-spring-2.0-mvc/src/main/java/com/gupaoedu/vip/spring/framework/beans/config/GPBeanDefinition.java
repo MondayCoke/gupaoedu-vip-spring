@@ -2,12 +2,16 @@ package com.gupaoedu.vip.spring.framework.beans.config;
 
 public class GPBeanDefinition {
 
-    public boolean isLazyInit(){  return false; }
+    public boolean isLazyInit() {
+        return false;
+    }
 
     private String factoryBeanName; //beanName
     private String beanClassName;   //原生类的全类名
 
-    public boolean isSingleton(){return true;}
+    public boolean isSingleton() {
+        return true;
+    }
 
     public String getFactoryBeanName() {
         return factoryBeanName;

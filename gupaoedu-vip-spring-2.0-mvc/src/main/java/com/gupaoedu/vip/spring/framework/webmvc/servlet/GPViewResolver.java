@@ -15,10 +15,13 @@ public class GPViewResolver {
     }
 
     public GPView resolveViewName(String viewName) {
-        if(null == viewName || "".equals(viewName.trim())){return null;}
+        if (null == viewName || "".equals(viewName.trim())) {
+            return null;
+        }
         viewName = viewName.endsWith(DEFAULT_TEMPLATE_SUFFIX) ? viewName : (viewName + DEFAULT_TEMPLATE_SUFFIX);
+
         File templateFile = new File((templateRootDir.getPath() + "/" + viewName)
-                .replaceAll("/+","/"));
+                .replaceAll("/+", "/"));
 
         return new GPView(templateFile);
     }

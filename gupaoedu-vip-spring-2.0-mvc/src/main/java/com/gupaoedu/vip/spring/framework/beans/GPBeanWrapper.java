@@ -9,11 +9,11 @@ public class GPBeanWrapper {
         this.wrappedClass = instance.getClass();
     }
 
-    public Object getWrappedInstance(){
+    public Object getWrappedInstance() {
         return this.wrapperedInstance;
     }
 
-    public Class<?> getWrappedClass(){
+    public Class<?> getWrappedClass() {
         return this.wrappedClass;
     }
 }
