@@ -16,7 +16,7 @@ import java.util.Map;
  *
  */
 @GPController
-@GPRequestMapping("/")
+@GPRequestMapping("/web")
 public class PageAction {
 
     @GPAutowired
@@ -31,5 +31,4 @@ public class PageAction {
         model.put("token", "123456");
         return new GPModelAndView("first.html", model);
     }
-
 }
