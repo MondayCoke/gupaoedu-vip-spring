@@ -11,13 +11,14 @@ import java.lang.reflect.Method;
 public class GPAfterReturningAdviceInterceptor extends GPAbstractAspectJAdvice implements GPMethodInterceptor {
 
     private GPJoinPoint jp;
+
     public GPAfterReturningAdviceInterceptor(Object aspect, Method adviceMethod) {
         super(aspect, adviceMethod);
     }
 
 
-    private void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable{
-        this.invokeAdviceMethod(this.jp,returnValue,null);
+    private void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
+        this.invokeAdviceMethod(this.jp, returnValue, null);
     }
 
     @Override

@@ -20,7 +20,7 @@ public class GPAspectJAfterThrowingAdvice extends GPAbstractAspectJAdvice implem
     public Object invoke(GPMethodInvocation mi) throws Throwable {
         try {
             return mi.proceed();
-        }catch (Throwable ex) {
+        } catch (Throwable ex) {
             invokeAdviceMethod(mi, null, ex);
             throw ex;
         }

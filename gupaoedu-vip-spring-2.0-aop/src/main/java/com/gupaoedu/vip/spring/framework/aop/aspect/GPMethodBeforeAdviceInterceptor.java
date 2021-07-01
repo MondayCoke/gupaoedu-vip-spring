@@ -11,12 +11,13 @@ import java.lang.reflect.Method;
 public class GPMethodBeforeAdviceInterceptor extends GPAbstractAspectJAdvice implements GPMethodInterceptor {
 
     private GPJoinPoint jp;
+
     public GPMethodBeforeAdviceInterceptor(Object aspect, Method adviceMethod) {
         super(aspect, adviceMethod);
     }
 
-    public void before(Method method, Object[] arguments, Object aThis) throws Throwable{
-        invokeAdviceMethod(this.jp,null,null);
+    public void before(Method method, Object[] arguments, Object aThis) throws Throwable {
+        invokeAdviceMethod(this.jp, null, null);
     }
 
     @Override

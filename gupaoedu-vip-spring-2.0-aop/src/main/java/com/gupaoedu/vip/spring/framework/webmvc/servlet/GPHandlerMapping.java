@@ -9,7 +9,7 @@ public class GPHandlerMapping {
     protected Method method;
     protected Pattern pattern;
 
-    public GPHandlerMapping(Pattern pattern,Object controller,Method method) {
+    public GPHandlerMapping(Pattern pattern, Object controller, Method method) {
         this.controller = controller;
         this.method = method;
         this.pattern = pattern;

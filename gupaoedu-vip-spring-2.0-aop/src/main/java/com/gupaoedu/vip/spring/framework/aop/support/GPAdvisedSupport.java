@@ -1,19 +1,17 @@
 package com.gupaoedu.vip.spring.framework.aop.support;
 
-import com.gupaoedu.vip.spring.framework.aop.aspect.GPAdvice;
 import com.gupaoedu.vip.spring.framework.aop.aspect.GPAfterReturningAdviceInterceptor;
 import com.gupaoedu.vip.spring.framework.aop.aspect.GPAspectJAfterThrowingAdvice;
 import com.gupaoedu.vip.spring.framework.aop.aspect.GPMethodBeforeAdviceInterceptor;
 import com.gupaoedu.vip.spring.framework.aop.config.GPAopConfig;
 
 import java.lang.reflect.Method;
-import java.rmi.MarshalException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 解析AOP配置的工具类
@@ -25,7 +23,7 @@ public class GPAdvisedSupport {
     private Class targetClass;
     private Pattern pointCutClassPattern;
 
-//    private Map<Method,Map<String,GPAdvice>> methodCache;
+    //    private Map<Method,Map<String,GPAdvice>> methodCache;
     private Map<Method, List<Object>> methodCache;
 
     public GPAdvisedSupport(GPAopConfig config) {
@@ -53,55 +51,55 @@ public class GPAdvisedSupport {
         methodCache = new HashMap<Method, List<Object>>();
         //保存专门匹配方法的正则
         Pattern pointCutPattern = Pattern.compile(pointCut);
-        try{
+        try {
             Class aspectClass = Class.forName(this.config.getAspectClass());
-            Map<String,Method> aspectMethods = new HashMap<String, Method>();
+            Map<String, Method> aspectMethods = new HashMap<String, Method>();
             for (Method method : aspectClass.getMethods()) {
-                aspectMethods.put(method.getName(),method);
+                aspectMethods.put(method.getName(), method);
             }
 
             for (Method method : this.targetClass.getMethods()) {
                 String methodString = method.toString();
-                if(methodString.contains("throws")){
-                    methodString = methodString.substring(0,methodString.lastIndexOf("throws")).trim();
+                if (methodString.contains("throws")) {
+                    methodString = methodString.substring(0, methodString.lastIndexOf("throws")).trim();
                 }
 
                 Matcher matcher = pointCutPattern.matcher(methodString);
-                if(matcher.matches()){
-                   List<Object> advices = new LinkedList<Object>();
+                if (matcher.matches()) {
+                    List<Object> advices = new LinkedList<Object>();
 
-                    if(!(null == config.getAspectBefore() || "".equals(config.getAspectBefore()))){
-                        advices.add(new GPMethodBeforeAdviceInterceptor(aspectClass.newInstance(),aspectMethods.get(config.getAspectBefore())));
+                    if (!(null == config.getAspectBefore() || "".equals(config.getAspectBefore()))) {
+                        advices.add(new GPMethodBeforeAdviceInterceptor(aspectClass.newInstance(), aspectMethods.get(config.getAspectBefore())));
                     }
-                    if(!(null == config.getAspectAfter() || "".equals(config.getAspectAfter()))){
-                        advices.add(new GPAfterReturningAdviceInterceptor(aspectClass.newInstance(),aspectMethods.get(config.getAspectAfter())));
+                    if (!(null == config.getAspectAfter() || "".equals(config.getAspectAfter()))) {
+                        advices.add(new GPAfterReturningAdviceInterceptor(aspectClass.newInstance(), aspectMethods.get(config.getAspectAfter())));
                     }
-                    if(!(null == config.getAspectAfterThrow() || "".equals(config.getAspectAfterThrow()))){
-                        GPAspectJAfterThrowingAdvice advice = new GPAspectJAfterThrowingAdvice(aspectClass.newInstance(),aspectMethods.get(config.getAspectAfterThrow()));
+                    if (!(null == config.getAspectAfterThrow() || "".equals(config.getAspectAfterThrow()))) {
+                        GPAspectJAfterThrowingAdvice advice = new GPAspectJAfterThrowingAdvice(aspectClass.newInstance(), aspectMethods.get(config.getAspectAfterThrow()));
                         advice.setThrowName(config.getAspectAfterThrowingName());
                         advices.add(advice);
                     }
 
                     //跟目标代理类的业务方法和Advices建立一对多个关联关系，以便在Porxy类中获得
-                    methodCache.put(method,advices);
+                    methodCache.put(method, advices);
                 }
             }
 
 
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
 
-    public List<Object> getInterceptorsAndDynamicInterceptionAdvice(Method method, Class<?> targetClass) throws  Exception{
+    public List<Object> getInterceptorsAndDynamicInterceptionAdvice(Method method, Class<?> targetClass) throws Exception {
 
         // 从缓存中获取
         List<Object> cached = this.methodCache.get(method);
         // 缓存未命中，则进行下一步处理
         if (cached == null) {
-            Method m = targetClass.getMethod(method.getName(),method.getParameterTypes());
+            Method m = targetClass.getMethod(method.getName(), method.getParameterTypes());
             cached = methodCache.get(m);
             this.methodCache.put(m, cached);
         }

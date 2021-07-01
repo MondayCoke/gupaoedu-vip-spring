@@ -13,7 +13,7 @@ public interface GPJoinPoint {
 
     Method getMethod();
 
-    void setUserAttribute(String key,Object value);
+    void setUserAttribute(String key, Object value);
 
     Object getUserAttribute(String key);
 

@@ -15,13 +15,11 @@ public abstract class GPAbstractAspectJAdvice implements GPAdvice {
         this.adviceMethod = adviceMethod;
     }
 
-    protected Object invokeAdviceMethod(
-            GPJoinPoint joinPoint, Object returnValue, Throwable ex)
-            throws Throwable {
-        Class<?> [] paramTypes = this.adviceMethod.getParameterTypes();
-        if(null == paramTypes || paramTypes.length == 0){
+    protected Object invokeAdviceMethod(GPJoinPoint joinPoint, Object returnValue, Throwable ex) throws Throwable {
+        Class<?>[] paramTypes = this.adviceMethod.getParameterTypes();
+        if (null == paramTypes || paramTypes.length == 0) {
             return this.adviceMethod.invoke(aspect);
-        }else {
+        } else {
             Object[] args = new Object[paramTypes.length];
             for (int i = 0; i < paramTypes.length; i++) {
                 if (paramTypes[i] == GPJoinPoint.class) {
@@ -32,6 +30,7 @@ public abstract class GPAbstractAspectJAdvice implements GPAdvice {
                     args[i] = returnValue;
                 }
             }
+            // 回调了自己定义的方法
             return this.adviceMethod.invoke(aspect, args);
         }
     }

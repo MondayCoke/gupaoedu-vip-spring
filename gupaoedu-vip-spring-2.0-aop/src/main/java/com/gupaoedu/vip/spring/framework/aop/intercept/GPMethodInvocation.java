@@ -28,10 +28,8 @@ public class GPMethodInvocation implements GPJoinPoint {
 
     private int currentInterceptorIndex = -1;
 
-    public GPMethodInvocation(
-            Object proxy, Object target, Method method, Object[] arguments,
-            Class<?> targetClass, List<Object> interceptorsAndDynamicMethodMatchers) {
-
+    public GPMethodInvocation(Object proxy, Object target, Method method, Object[] arguments,
+                              Class<?> targetClass, List<Object> interceptorsAndDynamicMethodMatchers) {
         this.proxy = proxy;
         this.target = target;
         this.targetClass = targetClass;
@@ -40,7 +38,7 @@ public class GPMethodInvocation implements GPJoinPoint {
         this.interceptorsAndDynamicMethodMatchers = interceptorsAndDynamicMethodMatchers;
     }
 
-    public Object proceed() throws Throwable{
+    public Object proceed() throws Throwable {
         if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) {
             return this.method.invoke(target, this.arguments);
         }
@@ -49,8 +47,8 @@ public class GPMethodInvocation implements GPJoinPoint {
 
         if (interceptorOrInterceptionAdvice instanceof GPMethodInterceptor) {
             GPMethodInterceptor mi = (GPMethodInterceptor) interceptorOrInterceptionAdvice;
-            return mi.invoke(this);
-        }else {
+            return mi.invoke(this); // 调到对应法人 AdviceInterceptor
+        } else {
             return proceed();
         }
     }
@@ -72,7 +70,7 @@ public class GPMethodInvocation implements GPJoinPoint {
 
     @Override
     public void setUserAttribute(String key, Object value) {
-        this.userAttributes.put(key,value);
+        this.userAttributes.put(key, value);
     }
 
     @Override

@@ -6,9 +6,9 @@ package com.gupaoedu.vip.demo.service;
  *
  */
 public interface IQueryService {
-	
-	/**
-	 * 查询
-	 */
-	public String query(String name);
+
+    /**
+     * 查询
+     */
+    public String query(String name);
 }
