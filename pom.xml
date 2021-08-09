@@ -1,0 +1,21 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.gupaoedu.vip.spring</groupId>
+	<!--<artifactId>gupaoedu-vip-spring</artifactId>-->
+	<artifactId>gupaoedu-vip-spring-all</artifactId>
+	<version>1.1.0</version>
+	<packaging>pom</packaging>
+
+
+    <modules>
+        <module>gupaoedu-vip-spring-1.0</module>
+        <module>gupaoedu-vip-spring-2.0-ioc</module>
+        <module>gupaoedu-vip-spring-2.0-di</module>
+        <module>gupaoedu-vip-spring-2.0-mvc</module>
+        <module>gupaoedu-vip-spring-2.0-aop</module>
+        <module>gupaoedu-vip-spring-orm</module>
+        <module>gupaoedu-vip-spring-tx</module>
+        <module>db</module>
+    </modules>
+</project>
