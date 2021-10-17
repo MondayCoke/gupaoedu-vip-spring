@@ -37,6 +37,7 @@ public class GPJdkDynamicAopProxy implements GPAopProxy, InvocationHandler {
 //        }
 //    }
 
+    @Override
     public Object getProxy() {
         return getProxy(this.getClass().getClassLoader());
     }

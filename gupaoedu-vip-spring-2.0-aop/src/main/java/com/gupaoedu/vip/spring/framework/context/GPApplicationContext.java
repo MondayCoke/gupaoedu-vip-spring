@@ -15,6 +15,7 @@ import com.gupaoedu.vip.spring.framework.core.GPBeanFactory;
 import java.lang.reflect.Field;
 import java.util.*;
 
+@SuppressWarnings("ALL")
 public class GPApplicationContext implements GPBeanFactory {
 
     private GPDefaultListableBeanFactory registry = new GPDefaultListableBeanFactory();

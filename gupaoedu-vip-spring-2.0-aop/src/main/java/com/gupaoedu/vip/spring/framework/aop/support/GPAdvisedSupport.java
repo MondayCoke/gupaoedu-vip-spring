@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
  * 解析AOP配置的工具类
  * Created by Tom.
  */
+@SuppressWarnings("ALL")
 public class GPAdvisedSupport {
     private GPAopConfig config;
     private Object target;
