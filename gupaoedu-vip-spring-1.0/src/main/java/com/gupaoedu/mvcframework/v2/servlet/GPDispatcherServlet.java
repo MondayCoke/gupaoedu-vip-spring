@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
 
+@SuppressWarnings("ALL")
 public class GPDispatcherServlet extends HttpServlet {
 
     //保存用户配置好的配置文件
@@ -139,7 +140,6 @@ public class GPDispatcherServlet extends HttpServlet {
         doInitHandlerMapping();
 
         System.out.println("GP Spring framework is init.");
-
     }
 
     private void doInitHandlerMapping() {
@@ -211,6 +211,7 @@ public class GPDispatcherServlet extends HttpServlet {
         }
     }
 
+    // 初始化IoC容器，将扫描到的类进行实例化，缓存到IoC容器中
     private void doInstance() {
         if (classNames.isEmpty()) {
             return;
