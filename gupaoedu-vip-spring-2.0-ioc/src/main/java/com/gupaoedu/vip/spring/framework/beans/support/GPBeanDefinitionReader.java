@@ -26,6 +26,13 @@ public class GPBeanDefinitionReader {
         doScanner(contextConfig.getProperty("scanPackage"));
     }
 
+    private GPBeanDefinition doCreateBeanDefinition(String factoryBeanName, String factoryClassName) {
+        GPBeanDefinition beanDefinition = new GPBeanDefinition();
+        beanDefinition.setFactoryBeanName(factoryBeanName);
+        beanDefinition.setBeanClassName(factoryClassName);
+        return beanDefinition;
+    }
+
     public List<GPBeanDefinition> loadBeanDefinitions() {
         List<GPBeanDefinition> result = new ArrayList<GPBeanDefinition>();
         try {
@@ -49,13 +56,6 @@ public class GPBeanDefinitionReader {
             e.printStackTrace();
         }
         return result;
-    }
-
-    private GPBeanDefinition doCreateBeanDefinition(String factoryBeanName, String factoryClassName) {
-        GPBeanDefinition beanDefinition = new GPBeanDefinition();
-        beanDefinition.setFactoryBeanName(factoryBeanName);
-        beanDefinition.setBeanClassName(factoryClassName);
-        return beanDefinition;
     }
 
 
