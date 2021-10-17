@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.*;
+
 public class GPView {
     private File viewFile;
 
@@ -26,7 +28,7 @@ public class GPView {
         while (null != (line = ra.readLine())) {
             line = new String(line.getBytes("iso-8859-1"), "utf-8");
 
-            Pattern pattern = Pattern.compile("￥\\{[^\\}]+\\}", Pattern.CASE_INSENSITIVE);
+            Pattern pattern = compile("￥\\{[^\\}]+\\}", CASE_INSENSITIVE);
             Matcher matcher = pattern.matcher(line);
             while (matcher.find()) {
                 //  ￥{teacher}
